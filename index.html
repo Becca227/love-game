@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Love.exe</title>
+
+<style>
+body {
+  margin: 0;
+  background: black;
+  overflow: hidden;
+  font-family: monospace;
+  color: white;
+  text-align: center;
+}
+
+.glitch {
+  font-size: 3rem;
+  animation: glitch 1s infinite;
+}
+
+@keyframes glitch {
+  0% { text-shadow: 3px 3px red; }
+  25% { text-shadow: -3px -3px cyan; }
+  50% { text-shadow: 3px -3px blue; }
+  75% { text-shadow: -3px 3px lime; }
+  100% { text-shadow: 3px 3px red; }
+}
+
+button {
+  padding: 15px 30px;
+  font-size: 1.2rem;
+  margin: 20px;
+  border: none;
+  cursor: pointer;
+  background: hotpink;
+  color: black;
+  border-radius: 30px;
+  transition: 0.2s;
+}
+
+button:hover {
+  transform: scale(1.1);
+}
+
+#noBtn {
+  background: red;
+  position: absolute;
+}
+
+.heart {
+  position: absolute;
+  animation: float 6s linear infinite;
+}
+
+@keyframes float {
+  0% { transform: translateY(100vh) scale(0.5); opacity: 1; }
+  100% { transform: translateY(-10vh) scale(1.5); opacity: 0; }
+}
+</style>
+</head>
+
+<body>
+
+<h1 class="glitch">Do you love me?</h1>
+<p>Click YES 5 times to win 💕</p>
+<h2 id="score">Love Score: 0/5</h2>
+
+<button id="yesBtn">YES 💖</button>
+<button id="noBtn">NO 😒</button>
+
+<script>
+let score = 0;
+const yesBtn = document.getElementById("yesBtn");
+const noBtn = document.getElementById("noBtn");
+const scoreDisplay = document.getElementById("score");
+
+yesBtn.onclick = function() {
+  score++;
+  scoreDisplay.textContent = "Love Score: " + score + "/5";
+
+  if (score >= 5) {
+    document.body.innerHTML = `
+      <h1 class="glitch">YOU WIN MY HEART 💘</h1>
+      <h2>Streaming exclusive love unlocked.</h2>
+    `;
+  }
+};
+
+noBtn.onmouseover = function() {
+  const x = Math.random() * (window.innerWidth - 100);
+  const y = Math.random() * (window.innerHeight - 50);
+  noBtn.style.left = x + "px";
+  noBtn.style.top = y + "px";
+};
+
+function createHeart() {
+  const heart = document.createElement("div");
+  heart.classList.add("heart");
+  heart.innerHTML = "💗";
+  heart.style.left = Math.random() * 100 + "vw";
+  heart.style.fontSize = (Math.random() * 20 + 15) + "px";
+  document.body.appendChild(heart);
+
+  setTimeout(() => heart.remove(), 6000);
+}
+
+setInterval(createHeart, 300);
+</script>
+
+</body>
+</html>
