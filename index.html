@@ -1,111 +1,221 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Love.exe</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Love Protocol 💘</title>
 
 <style>
-body {
+* {
   margin: 0;
-  background: black;
-  overflow: hidden;
-  font-family: monospace;
-  color: white;
-  text-align: center;
+  padding: 0;
+  box-sizing: border-box;
 }
 
+body {
+  height: 100vh;
+  background: radial-gradient(circle at top, #111 0%, #000 60%);
+  font-family: 'Segoe UI', sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  color: white;
+}
+
+/* Card */
+.card {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(15px);
+  padding: 30px;
+  border-radius: 20px;
+  width: 90%;
+  max-width: 400px;
+  text-align: center;
+  position: relative;
+  box-shadow: 0 0 30px rgba(255,0,150,0.3);
+}
+
+/* Glitch title */
 .glitch {
-  font-size: 3rem;
-  animation: glitch 1s infinite;
+  font-size: 1.8rem;
+  margin-bottom: 10px;
+  animation: glitch 1.2s infinite;
 }
 
 @keyframes glitch {
-  0% { text-shadow: 3px 3px red; }
-  25% { text-shadow: -3px -3px cyan; }
-  50% { text-shadow: 3px -3px blue; }
-  75% { text-shadow: -3px 3px lime; }
-  100% { text-shadow: 3px 3px red; }
+  0% { text-shadow: 2px 2px #ff00c8; }
+  50% { text-shadow: -2px -2px #00f7ff; }
+  100% { text-shadow: 2px 2px #ff00c8; }
+}
+
+.subtitle {
+  font-size: 0.9rem;
+  opacity: 0.7;
+  margin-bottom: 20px;
+}
+
+/* Progress bar */
+.progress-container {
+  background: rgba(255,255,255,0.1);
+  border-radius: 20px;
+  overflow: hidden;
+  margin-bottom: 20px;
+  height: 10px;
+}
+
+.progress-bar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, hotpink, cyan);
+  transition: 0.3s;
+}
+
+/* Buttons */
+.buttons {
+  position: relative;
 }
 
 button {
-  padding: 15px 30px;
-  font-size: 1.2rem;
-  margin: 20px;
+  padding: 12px 20px;
   border: none;
+  border-radius: 25px;
+  font-size: 1rem;
+  margin: 10px;
   cursor: pointer;
-  background: hotpink;
-  color: black;
-  border-radius: 30px;
-  transition: 0.2s;
+  transition: 0.2s ease;
 }
 
-button:hover {
+#yesBtn {
+  background: linear-gradient(45deg, hotpink, deeppink);
+  color: white;
+}
+
+#yesBtn:hover {
   transform: scale(1.1);
 }
 
 #noBtn {
-  background: red;
+  background: #ff2e2e;
+  color: white;
   position: absolute;
 }
 
+/* Floating hearts */
 .heart {
   position: absolute;
-  animation: float 6s linear infinite;
+  font-size: 18px;
+  animation: float 5s linear infinite;
 }
 
 @keyframes float {
-  0% { transform: translateY(100vh) scale(0.5); opacity: 1; }
-  100% { transform: translateY(-10vh) scale(1.5); opacity: 0; }
+  0% { transform: translateY(100vh); opacity: 1; }
+  100% { transform: translateY(-10vh); opacity: 0; }
+}
+
+/* Win screen */
+.win-screen {
+  animation: fadeIn 1s ease forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Responsive text */
+@media (max-width: 400px) {
+  .glitch {
+    font-size: 1.4rem;
+  }
 }
 </style>
 </head>
 
 <body>
 
-<h1 class="glitch">Do you love me?</h1>
-<p>Click YES 5 times to win 💕</p>
-<h2 id="score">Love Score: 0/5</h2>
+<div class="card" id="card">
+  <h1 class="glitch">Do You Love Me? 💖</h1>
+  <p class="subtitle">Tap YES 5 times to unlock secret love mode.</p>
 
-<button id="yesBtn">YES 💖</button>
-<button id="noBtn">NO 😒</button>
+  <div class="progress-container">
+    <div class="progress-bar" id="progressBar"></div>
+  </div>
+
+  <div class="buttons">
+    <button id="yesBtn">YES 😌</button>
+    <button id="noBtn">NO 🙄</button>
+  </div>
+</div>
 
 <script>
 let score = 0;
+const maxScore = 5;
+const progressBar = document.getElementById("progressBar");
 const yesBtn = document.getElementById("yesBtn");
 const noBtn = document.getElementById("noBtn");
-const scoreDisplay = document.getElementById("score");
+const card = document.getElementById("card");
 
-yesBtn.onclick = function() {
+/* YES button */
+yesBtn.onclick = () => {
   score++;
-  scoreDisplay.textContent = "Love Score: " + score + "/5";
+  let progress = (score / maxScore) * 100;
+  progressBar.style.width = progress + "%";
 
-  if (score >= 5) {
-    document.body.innerHTML = `
-      <h1 class="glitch">YOU WIN MY HEART 💘</h1>
-      <h2>Streaming exclusive love unlocked.</h2>
+  createHeart();
+
+  if (score >= maxScore) {
+    card.innerHTML = `
+      <div class="win-screen">
+        <h1 class="glitch">LOVE MODE ACTIVATED 💘</h1>
+        <p>You are officially my favorite human.</p>
+      </div>
     `;
+    confettiExplosion();
   }
 };
 
-noBtn.onmouseover = function() {
+/* NO button runs */
+noBtn.onmouseover = () => {
   const x = Math.random() * (window.innerWidth - 100);
-  const y = Math.random() * (window.innerHeight - 50);
+  const y = Math.random() * (window.innerHeight - 100);
   noBtn.style.left = x + "px";
   noBtn.style.top = y + "px";
 };
 
+/* Hearts */
 function createHeart() {
   const heart = document.createElement("div");
   heart.classList.add("heart");
   heart.innerHTML = "💗";
   heart.style.left = Math.random() * 100 + "vw";
-  heart.style.fontSize = (Math.random() * 20 + 15) + "px";
+  heart.style.fontSize = (Math.random() * 15 + 15) + "px";
   document.body.appendChild(heart);
-
-  setTimeout(() => heart.remove(), 6000);
+  setTimeout(() => heart.remove(), 5000);
 }
 
-setInterval(createHeart, 300);
+/* Confetti */
+function confettiExplosion() {
+  for (let i = 0; i < 50; i++) {
+    const confetti = document.createElement("div");
+    confetti.style.position = "absolute";
+    confetti.style.width = "6px";
+    confetti.style.height = "6px";
+    confetti.style.background = `hsl(${Math.random()*360},100%,50%)`;
+    confetti.style.left = Math.random() * 100 + "vw";
+    confetti.style.top = "-10px";
+    confetti.style.opacity = "1";
+    confetti.style.transition = "2s linear";
+    document.body.appendChild(confetti);
+
+    setTimeout(() => {
+      confetti.style.top = "100vh";
+      confetti.style.opacity = "0";
+    }, 10);
+
+    setTimeout(() => confetti.remove(), 2000);
+  }
+}
 </script>
 
 </body>
